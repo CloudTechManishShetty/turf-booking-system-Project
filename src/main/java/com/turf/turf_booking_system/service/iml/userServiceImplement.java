@@ -2,6 +2,7 @@ package com.turf.turf_booking_system.service.iml;
 
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.turf.turf_booking_system.model.users;
@@ -43,6 +44,11 @@ public class userServiceImplement implements userService{
     @Override
     public List<users> getAllUser() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<users> getUsers(@Param("name") String name) {
+        return userRepository.findByName(name);
     }
 
 }

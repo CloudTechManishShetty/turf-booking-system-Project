@@ -2,6 +2,7 @@ package com.turf.turf_booking_system.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turf.turf_booking_system.model.users;
 import com.turf.turf_booking_system.service.userService;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -38,6 +41,16 @@ public class UserController {
     @GetMapping("{user_Id}")
     public users getUserDetails(@PathVariable("user_Id") Long user_Id) {
         return userservice.getUser(user_Id);
+    }
+
+    //for specific user based on Name.
+    @GetMapping("/search")
+    public ResponseEntity<List<users>> searchUsers(@RequestParam String name) {
+        List<users> users = userservice.getUsers(name);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(users);
     }
 
     //for All users in Databse.

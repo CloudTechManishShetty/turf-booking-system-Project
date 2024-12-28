@@ -60,7 +60,7 @@ public class UserController {
     }
 
     //To create new Users
-    @PostMapping
+    @PostMapping("/register")
     public String createUser(@RequestBody users user) {
         userservice.createUser(user);
         return "Sucessfull Create a User";

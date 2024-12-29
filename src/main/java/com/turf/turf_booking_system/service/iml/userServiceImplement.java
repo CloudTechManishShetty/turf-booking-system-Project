@@ -26,7 +26,7 @@ public class userServiceImplement implements userService{
 
     @Override
     public String updateUser(users user) {
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         return "Succesfull Updated the User";
     }
 

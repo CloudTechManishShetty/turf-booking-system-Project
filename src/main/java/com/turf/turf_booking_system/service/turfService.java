@@ -9,5 +9,5 @@ public interface turfService {
     public String updateTurf(turfs turf);
     public String deleteTurf(Long turfId);
     public List<turfs> listAllTurfs();
-    public List<turfs> searchTurfs(String name, String location); 
+    public List<turfs> searchTurfs(String name, String location);
 }

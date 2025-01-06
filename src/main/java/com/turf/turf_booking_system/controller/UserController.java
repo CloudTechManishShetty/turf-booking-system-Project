@@ -2,6 +2,7 @@ package com.turf.turf_booking_system.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,9 +62,9 @@ public class UserController {
 
     //To create new Users
     @PostMapping("/register")
-    public String createUser(@RequestBody users user) {
+    public ResponseEntity<String> createUser(@RequestBody users user) {
         userservice.createUser(user);
-        return "Sucessfull Create a User";
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
     }
     
     //To Update Users.
@@ -78,6 +79,5 @@ public class UserController {
     public String deleteUser(@PathVariable("user_Id") Long user_Id) {
         userservice.delete(user_Id);
         return "Sucessfully Deleted a User with User-ID: "+user_Id;
-    }
-        
+    }    
 }

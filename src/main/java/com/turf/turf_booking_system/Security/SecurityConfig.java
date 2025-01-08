@@ -57,7 +57,7 @@ public class SecurityConfig {
                 
                 .authorizeHttpRequests(registry ->{
                     registry.requestMatchers("/api/users/reg/signup","/signup","/api/users/login","/Home", "/css/**", "/js/**","/images/**").permitAll()
-                    .anyRequest().permitAll();
+                    .anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {

@@ -81,11 +81,11 @@
 }
 
 .container {
-    width: 350px;
+    width: 450px;
     padding: 30px;
     background: #f5f6f6e6;
     border-radius: 10px;
-    padding-right: 50px;
+    /* padding-right: 50px; */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
     transform: translateY(-20px);
@@ -130,9 +130,9 @@ input[type="password"]:focus {
 }
 
 .btn {
-    width: 100%;
+    width: 80%;
     padding: 10px;
-    margin-left: 12px;
+    /* margin-left: 12px; */
     background-color: #2980b9;
     color: white;
     border: none;

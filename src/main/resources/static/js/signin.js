@@ -23,17 +23,28 @@ const loginButton = document.getElementById("loginButton");
             .then(response => {
                 if (response.ok) {
                     console.log('Login successful!');
+                    showToast('successToast');
                     // Redirect to dashboard or another page if necessary
                     window.location.href = '/Home';
                 } else {
+                    showToast('errorToast');
                     return response.json().then(errorData => {
                         console.error('Error response:', errorData);
-                        alert(`Error: ${errorData.message || 'Invalid email or password'}`);
+                        console.log(`Error: ${errorData.message || 'Invalid email or password'}`);
+                        
                     });
                 }
             })
             .catch(error => {
                 console.error('Network error:', error);
-                alert('Network error: ' + error.message);
+                // alert('Network error: ' + error.message);
             });
+
+            // Function to show a specific toast
+            function showToast(toastId) {
+                console.log('Showing toast with ID:', toastId);
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            }
         });

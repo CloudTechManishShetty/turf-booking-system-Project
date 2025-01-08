@@ -2,6 +2,8 @@ package com.turf.turf_booking_system.service;
 
 import java.util.List;
 
+import com.turf.turf_booking_system.model.LoginRequest;
+import com.turf.turf_booking_system.model.LoginResponse;
 import com.turf.turf_booking_system.model.users;
 
 public interface userService {
@@ -11,4 +13,5 @@ public interface userService {
     public users getUser(Long userId);
     public List<users> getUsers(String name);
     public List<users> getAllUser();
+    public LoginResponse authenticateUser(LoginRequest loginRequest) throws Exception;
 }

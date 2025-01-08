@@ -2,9 +2,13 @@ package com.turf.turf_booking_system.service.iml;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.turf.turf_booking_system.model.LoginRequest;
+import com.turf.turf_booking_system.model.LoginResponse;
 import com.turf.turf_booking_system.model.users;
 import com.turf.turf_booking_system.repository.UserRepository;
 import com.turf.turf_booking_system.service.userService;
@@ -13,6 +17,9 @@ import com.turf.turf_booking_system.service.userService;
 public class userServiceImplement implements userService{
 
     UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public userServiceImplement(UserRepository userRepository){
         this.userRepository=userRepository;
@@ -49,6 +56,18 @@ public class userServiceImplement implements userService{
     @Override
     public List<users> getUsers(@Param("name") String name) {
         return userRepository.findByName(name);
+    }
+
+    @Override
+    public LoginResponse authenticateUser(LoginRequest loginRequest) throws Exception {
+        users user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new Exception("Invalid email or password"));
+
+            if (!loginRequest.getPassword().equals(user.getPsw())) {
+                throw new Exception("Invalid email or password");
+            }
+
+        return new LoginResponse(user.getUserId(), user.getEmail(), "Login successful");
     }
 
 }

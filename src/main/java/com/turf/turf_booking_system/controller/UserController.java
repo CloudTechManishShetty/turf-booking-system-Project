@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turf.turf_booking_system.model.LoginRequest;
+import com.turf.turf_booking_system.model.LoginResponse;
 import com.turf.turf_booking_system.model.users;
 import com.turf.turf_booking_system.service.userService;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("api/users")
 public class UserController {
     
     // @Autowired
@@ -61,12 +63,22 @@ public class UserController {
     }
 
     //To create new Users
-    @PostMapping("/register")
+    @PostMapping(value = "/reg/signup", consumes = "application/json")
     public ResponseEntity<String> createUser(@RequestBody users user) {
         userservice.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
     }
     
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+        try {
+            LoginResponse response = userservice.authenticateUser(loginRequest);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
     //To Update Users.
     @PutMapping
     public String updateUser(@RequestBody users user) {

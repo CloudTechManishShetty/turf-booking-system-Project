@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.turf.turf_booking_system.model.LoginRequest;
-import com.turf.turf_booking_system.model.LoginResponse;
+import com.turf.turf_booking_system.dto.LoginRequest;
+import com.turf.turf_booking_system.dto.LoginResponse;
 import com.turf.turf_booking_system.model.users;
 import com.turf.turf_booking_system.service.userService;
 import org.springframework.web.bind.annotation.PutMapping;

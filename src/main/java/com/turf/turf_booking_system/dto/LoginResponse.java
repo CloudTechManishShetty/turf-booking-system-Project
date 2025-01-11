@@ -1,4 +1,4 @@
-package com.turf.turf_booking_system.model;
+package com.turf.turf_booking_system.dto;
 
 public class LoginResponse {
     private Long userId;

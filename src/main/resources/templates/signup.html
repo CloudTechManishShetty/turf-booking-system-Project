@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register for Turf Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -106,6 +107,27 @@
             <p>Already have an account? <a href="/login">Log in</a></p>
         </div>
     </div>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11;">
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Registration successful! Proceed with Login.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Registration Failed!:<
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
     <script>
         const submitButton = document.getElementById("submit");
         submitButton.addEventListener('click', (event) => {
@@ -134,8 +156,10 @@
             })
             .then(response => {
                 if (response.ok) {
-                    alert('Registration successful!');
+                    showToast('successToast');
+                    console.log('Registration successful!');
                 } else {
+                    showToast('errorToast');
                     return response.json().then(errorData => {
                         console.error('Error response:', errorData);
                         alert(`Error: ${errorData.message || 'Unknown error'}`);
@@ -146,7 +170,15 @@
                 console.error('Network error:', error);
                 alert('Network error: ' + error.message);
             });
+
+            function showToast(toastId) {
+                console.log('Showing toast with ID:', toastId);
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            }
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

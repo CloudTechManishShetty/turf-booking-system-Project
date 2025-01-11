@@ -175,3 +175,22 @@ section{
     color: white;
     margin-left: 15rem;
 }
+
+.nav-optionsi {
+    text-decoration: none;
+    color: #333;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin: 2rem;
+    font-weight: bolder;
+}
+#nav-signup {
+    background-color: #007bff;
+    color: white;
+}
+.nav-optionsi:hover {
+    background-color: #e9ecef;
+}
+#nav-signup:hover {
+    background-color: #0056b3;
+}

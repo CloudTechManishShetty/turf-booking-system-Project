@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.turf.turf_booking_system.model.LoginRequest;
-import com.turf.turf_booking_system.model.LoginResponse;
+import com.turf.turf_booking_system.dto.LoginRequest;
+import com.turf.turf_booking_system.dto.LoginResponse;
 import com.turf.turf_booking_system.model.users;
 import com.turf.turf_booking_system.repository.UserRepository;
 import com.turf.turf_booking_system.service.userService;
@@ -16,10 +16,10 @@ import com.turf.turf_booking_system.service.userService;
 @Service
 public class userServiceImplement implements userService{
 
+    @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    // private BCryptPasswordEncoder passwordEncoder;
 
     public userServiceImplement(UserRepository userRepository){
         this.userRepository=userRepository;

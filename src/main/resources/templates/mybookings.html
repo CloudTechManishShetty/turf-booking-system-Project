@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <h1 class="text-3xl text-center p-4">your Bookings</h1>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-300">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-6 py-3 border-b border-gray-300 text-left text-sm font-medium text-gray-700">Booking Id</th>
+                    <th class="px-6 py-3 border-b border-gray-300 text-left text-sm font-medium text-gray-700">Name</th>
+                    <th class="px-6 py-3 border-b border-gray-300 text-left text-sm font-medium text-gray-700">Address</th>
+                    <th class="px-6 py-3 border-b border-gray-300 text-left text-sm font-medium text-gray-700">Price to be paid</th>
+                    <th class="px-6 py-3 border-b border-gray-300 text-left text-sm font-medium text-gray-700">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 border-b border-gray-300 text-sm text-gray-900">TURF-AEG0423</td>
+                    <td class="px-6 py-4 border-b border-gray-300 text-sm text-gray-900">Turf A</td>
+                    <td class="px-6 py-4 border-b border-gray-300 text-sm text-gray-900">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Harum, et? Aut velit culpa quidem nemo ratione rerum! Nostrum facere sunt voluptatem culpa libero.</td>
+                    <td class="px-6 py-4 border-b border-gray-300 text-sm text-gray-900">$50/hr</td>
+                    <td class="px-6 py-4 border-b border-gray-300 text-sm text-gray-900">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Cancel</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

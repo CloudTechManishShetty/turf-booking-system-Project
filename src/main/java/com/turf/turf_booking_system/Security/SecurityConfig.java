@@ -3,24 +3,32 @@ package com.turf.turf_booking_system.Security;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-// import org.springframework.web.servlet.config.annotation.CorsRegistry;
-// import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// import jakarta.servlet.http.HttpServletResponse;
+import com.turf.turf_booking_system.Security.utillis.JwtRequestFilter;
+
+
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    @Lazy
+    private JwtRequestFilter jwtRequestFilter;  // Add JwtRequestFilter for JWT handling
 
 
     @Bean
@@ -28,37 +36,26 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // @Bean
-    // public WebMvcConfigurer corsConfigurer() {
-    //     return new WebMvcConfigurer() {
-    //         @Override
-    //         public void addCorsMappings(CorsRegistry registry) {
-    //             registry.addMapping("/api/users/reg/signup").allowedOrigins("http://localhost:8080"); // Replace with your frontend URL
-    //             registry.addMapping("/api/users/login").allowedOrigins("http://localhost:8080");
-    //         }
-    //     };
-    // }
-
+    @Bean
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     @Bean
-    public SecurityFilterChain SecurityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     var config = new org.springframework.web.cors.CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:8080")); // Adjust the origin
+                    config.setAllowedOrigins(List.of("http://localhost:8080"));  // Frontend URL
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     config.setAllowedHeaders(List.of("*"));
                     return config;
                 }))
-                .formLogin(httpForm -> {
-                     httpForm
-                        .loginPage("/login").permitAll();
-                })
-                
-                .authorizeHttpRequests(registry ->{
-                    registry.requestMatchers("/api/users/reg/signup","/signup","/api/users/login","/Home", "/css/**", "/js/**","/images/**").permitAll()
-                    .anyRequest().authenticated();
+                .authorizeHttpRequests(registry -> {
+                    registry.requestMatchers("/api/users/reg/signup", "/signup","/login", "/api/users/login", "/Home", "/css/**", "/js/**", "/images/**","/favicon.ico")
+                            .permitAll()  // Allow access to these endpoints without authentication
+                            .anyRequest().authenticated();  // All other requests require authentication
                 })
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -66,7 +63,10 @@ public class SecurityConfig {
                         })
                 )
                 .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless for JWT
-                .build();   
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Stateless for JWT
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)  // Ensure JWT filter is added
+                .build();
     }
+    
 }
+

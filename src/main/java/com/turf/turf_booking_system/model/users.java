@@ -1,12 +1,18 @@
 package com.turf.turf_booking_system.model;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class users {
+public class users implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment ID
     private Long user_Id;
@@ -88,6 +94,17 @@ public class users {
 
     public void setApproved(boolean approved) {
         isApproved = approved;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //Return authorities based on the role stored in the user entity
+        return Collections.singletonList(() -> "ROLE_" + role);
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 }
 

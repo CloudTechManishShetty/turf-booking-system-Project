@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,11 +26,19 @@ import com.turf.turf_booking_system.Security.utillis.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
     @Lazy
     private JwtRequestFilter jwtRequestFilter;  // Add JwtRequestFilter for JWT handling
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**");
+    }
 
 
     @Bean
@@ -53,7 +63,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/api/users/reg/signup", "/signup","/login", "/api/users/login", "/Home", "/css/**", "/js/**", "/images/**","/favicon.ico")
+                    registry.requestMatchers("/api/users/reg/signup", "/signup","/login", "/api/users/login", "/Home", "/css/**", "/js/**", "/images/**","/favicon.ico","/swagger-ui/index.html","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
                             .permitAll()  // Allow access to these endpoints without authentication
                             .anyRequest().authenticated();  // All other requests require authentication
                 })

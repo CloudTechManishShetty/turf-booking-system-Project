@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,28 +29,33 @@ public class TurfController {
         this.turfservice=turfservice;
     }
     
+    @PreAuthorize("hasRole('admin') or hasRole('super_admin')")
     @PostMapping
     public ResponseEntity<turfs> addTurf(@RequestBody turfs turf) {
         return ResponseEntity.ok(turfservice.addTurf(turf));
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('super_admin')")
     @PutMapping
     public String updateTurf(@RequestBody turfs turf) {
         turfservice.updateTurf(turf);
         return "Sucessfully Updated the Turf "+turf.getName();
     }
 
+    @PreAuthorize("hasRole('admin') or hasRole('super_admin')")
     @DeleteMapping("/{turfId}")
     public ResponseEntity<String> deleteTurf(@PathVariable Long turfId) {
         turfservice.deleteTurf(turfId);
         return ResponseEntity.ok("Turf deleted successfully");
     }
 
+    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
     @GetMapping
     public ResponseEntity<List<turfs>> listAllTurfs() {
         return ResponseEntity.ok(turfservice.listAllTurfs());
     }
 
+    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
     @GetMapping("/search")
     public ResponseEntity<List<turfs>> searchTurfs(
             @RequestParam(required = false) String name,

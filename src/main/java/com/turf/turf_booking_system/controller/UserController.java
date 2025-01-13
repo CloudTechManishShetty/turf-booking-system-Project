@@ -5,6 +5,7 @@
 
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
+    import org.springframework.security.access.prepost.PreAuthorize;
     import org.springframework.security.authentication.AuthenticationManager;
     import org.springframework.security.authentication.BadCredentialsException;
     import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,9 +24,10 @@
     import com.turf.turf_booking_system.dto.LoginResponse;
     import com.turf.turf_booking_system.model.users;
     import com.turf.turf_booking_system.service.userService;
+
+
     import org.springframework.web.bind.annotation.PutMapping;
     import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 
@@ -47,12 +49,14 @@
         }
 
         //for Specific User based on ID.
+        @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
         @GetMapping("{user_Id}")
         public users getUserDetails(@PathVariable("user_Id") Long user_Id) {
             return userservice.getUser(user_Id);
         }
 
         //for specific user based on Name.
+        @PreAuthorize("hasRole('admin') or hasRole('super_admin')")
         @GetMapping("/search")
         public ResponseEntity<List<users>> searchUsers(@RequestParam String name) {
             List<users> users = userservice.getUsers(name);
@@ -63,6 +67,7 @@
         }
 
         //for All users in Databse.
+        @PreAuthorize("hasRole('super_admin')")
         @GetMapping
         public List<users> getAllUsers() {
             return userservice.getAllUser();
@@ -122,6 +127,7 @@
         }
 
         //To Update Users.
+        @PreAuthorize("hasRole('user') or hasRole('super_admin')")
         @PutMapping
         public String updateUser(@RequestBody users user) {
             userservice.updateUser(user);
@@ -129,6 +135,7 @@
         }
 
         //To Delete a User
+        @PreAuthorize("hasRole('super_admin')")
         @DeleteMapping("{user_Id}")
         public String deleteUser(@PathVariable("user_Id") Long user_Id) {
             userservice.delete(user_Id);

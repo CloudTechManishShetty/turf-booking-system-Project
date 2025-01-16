@@ -11,13 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.turf.turf_booking_system.dto.LoginRequest;
-import com.turf.turf_booking_system.dto.LoginResponse;
 import com.turf.turf_booking_system.model.users;
 import com.turf.turf_booking_system.repository.UserRepository;
 import com.turf.turf_booking_system.service.userService;

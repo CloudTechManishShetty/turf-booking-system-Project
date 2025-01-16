@@ -14,6 +14,7 @@ import com.turf.turf_booking_system.service.userService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -27,29 +28,33 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private userService userservice;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
-
-        String jwt = null;
-        String userId = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            userId = jwtUtil.extractUsername(jwt); // Extract userId from the token
-        }
-
-        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            users user = userservice.getUser(Long.parseLong(userId)); // Fetch user details from DB
-
-            if (user != null && jwtUtil.validateToken(jwt)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user, null, user.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // Extract JWT token from cookies
+        String token = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
             }
         }
 
-        filterChain.doFilter(request, response);
+        // Validate token if present
+        if (token != null && jwtUtil.validateToken(token)) {
+            String username = jwtUtil.extractUsername(token);
+            users user = userservice.getUser(Long.parseLong(username)); // or use user ID if necessary
+        
+            if (user != null) {
+                // Set authentication with user's authorities (roles, permissions)
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        user, null, user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+
+        filterChain.doFilter(request, response);  // Continue with filter chain
     }
 }

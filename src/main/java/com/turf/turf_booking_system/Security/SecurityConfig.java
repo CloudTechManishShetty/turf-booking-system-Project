@@ -37,7 +37,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**");
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**","/favicon.ico");
     }
 
 
@@ -57,15 +57,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     var config = new org.springframework.web.cors.CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:8080"));  // Frontend URL
+                    config.setAllowedOrigins(List.of("http://localhost:5500"));  // Frontend URL
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     config.setAllowedHeaders(List.of("*"));
                     return config;
                 }))
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/api/users/reg/signup", "/signup","/login", "/api/users/login", "/Home", "/css/**", "/js/**", "/images/**","/favicon.ico","/swagger-ui/index.html","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
-                            .permitAll()  // Allow access to these endpoints without authentication
-                            .anyRequest().authenticated();  // All other requests require authentication
+                    registry.requestMatchers("/","/api/users/reg/signup","/api/users/ValidateToken", "/signup","/login", "/api/users/login", "/FindYourTurf", "/css/**", "/js/**", "/images/**","/favicon.ico","/swagger-ui/index.html","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                             .requestMatchers("/favicon.ico")
+                             .permitAll()  // Allow access to these endpoints without authentication
+                             .anyRequest().authenticated();  // All other requests require authentication
                 })
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {

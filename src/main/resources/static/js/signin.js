@@ -18,6 +18,7 @@ const loginButton = document.getElementById("loginButton");
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: jsonData
             })
             .then(response => {
@@ -27,27 +28,20 @@ const loginButton = document.getElementById("loginButton");
                     return response.text().then(errorMessage => { // Get error message from server
                         console.error("Server Error:", errorMessage);
                         showToast('errorToast');
-                        // Optionally display the error message to the user
-                        // alert(errorMessage);
-                        // throw new Error("Server returned an error"); // Re-throw to prevent further processing
                     });
                 }
         
                 return response.json(); // Parse the JSON response body
             })
-            .then(data => { // Handle the parsed JSON data (the LoginResponse)
-                console.log("Response Data:", data); // Debug: Log the data
+            .then(data => {
+                console.log("Response Data:", data);
         
-                if (data && data.token) { // Check if data and token exist
-                    const token = data.token;
-                    console.log("Token:", token); // Log the token
-                    localStorage.setItem('jwtToken', token); // Store the token (e.g., in localStorage)
-                    showToast('successToast');
-                    window.location.href = '/Home'; // Redirect
+                if (data && data.message === "Login successful") {
+                    console.log("Shoul redirect to dashboard"); // Redirect on successful login
+                    window.location.href = '/dashboard';
                 } else {
-                    console.error("Token not found in response.");
-                    showToast('errorToast');
-                    // alert("Token not found in response.");
+                    console.error("Login failed:", data ? data.message : "Unexpected response format");
+                    showToast('errorToast', data ? data.message : "Login failed");
                 }
             })
             .catch(error => {

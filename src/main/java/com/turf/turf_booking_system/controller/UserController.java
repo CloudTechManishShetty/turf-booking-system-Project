@@ -1,9 +1,12 @@
     package com.turf.turf_booking_system.controller;
+    import java.util.HashMap;
     import java.util.List;
+    import java.util.Map;
 
     import org.springframework.beans.factory.annotation.Autowired;
 
     import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.access.prepost.PreAuthorize;
     import org.springframework.security.authentication.AuthenticationManager;
@@ -16,15 +19,17 @@
     import org.springframework.web.bind.annotation.PathVariable;
     import org.springframework.web.bind.annotation.PostMapping;
     import org.springframework.web.bind.annotation.RequestBody;
+    import org.springframework.web.bind.annotation.RequestHeader;
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RestController;
 
     import com.turf.turf_booking_system.Security.utillis.JwtUtil;
     import com.turf.turf_booking_system.dto.LoginRequest;
-    import com.turf.turf_booking_system.dto.LoginResponse;
     import com.turf.turf_booking_system.model.users;
     import com.turf.turf_booking_system.service.userService;
 
+    import jakarta.servlet.http.Cookie;
+    import jakarta.servlet.http.HttpServletResponse;
 
     import org.springframework.web.bind.annotation.PutMapping;
     import org.springframework.web.bind.annotation.RequestParam;
@@ -82,7 +87,7 @@
         
         //changes made here
         @PostMapping("/login")
-        public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+        public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest,HttpServletResponse response) {
             // Log the incoming request
             System.out.println("Login request received for email: " + loginRequest.getEmail());
             
@@ -105,16 +110,22 @@
                 // Generate JWT token
                 String jwtToken = jwtUtil.generateToken(user.getUserId());
     
-                // Create and return the LoginResponse
-                LoginResponse loginResponse = new LoginResponse(
-                    user.getUserId(),
-                    user.getEmail(),
-                    "Login successful",
-                    user.getRole(),
-                    jwtToken
-                );
     
-                return ResponseEntity.ok(loginResponse);
+                // return ResponseEntity.ok(loginResponse);
+                // Create the cookie
+                Cookie jwtCookie = new Cookie("token", jwtToken);
+                jwtCookie.setHttpOnly(true);      // Prevent JavaScript access
+                // jwtCookie.setSecure(true);       // Send only over HTTPS
+                jwtCookie.setPath("/");          // Available to all paths
+                jwtCookie.setMaxAge(24 * 60 * 60); // 1 day expiration
+
+                // Add the cookie to the response
+                response.addCookie(jwtCookie);
+
+                Map<String, String> responseBody = new HashMap<>();
+                responseBody.put("message", "Login successful");
+                
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
     
             } catch (BadCredentialsException ex) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -140,5 +151,32 @@
         public String deleteUser(@PathVariable("user_Id") Long user_Id) {
             userservice.delete(user_Id);
             return "Sucessfully Deleted a User with User-ID: "+user_Id;
-        }    
+        } 
+        
+        //to Validate the token
+        @GetMapping("/validateToken")
+        public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authorizationHeader) {
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                Map<String,Boolean> response = new HashMap<>();
+                response.put("isValid",false);
+                return ResponseEntity.ok(response);
+            }
+
+            String token = authorizationHeader.substring(7); // Extract the token (remove "Bearer ")
+            try {
+                if (jwtUtil.validateToken(token)) {
+                    Map<String,Boolean> response = new HashMap<>();
+                    response.put("isValid",true);
+                    return ResponseEntity.ok(response);
+                } else {
+                    Map<String,Boolean> response = new HashMap<>();
+                    response.put("isValid",false);
+                    return ResponseEntity.ok(response);
+                }
+            } catch (Exception e) {
+                Map<String,Boolean> response = new HashMap<>();
+                response.put("isValid",false);
+                return ResponseEntity.ok(response);
+            }
+        }
     }

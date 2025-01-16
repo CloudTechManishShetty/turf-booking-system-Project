@@ -194,3 +194,29 @@ section{
 #nav-signup:hover {
     background-color: #0056b3;
 }
+
+#nav-logout {
+    background-color: #e0f7fa;  /* Light Blue */
+    color: #00796b;  /* A contrasting text color */
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+#nav-logout:hover {
+    background-color: #b2ebf2;  /* Slightly darker blue for hover effect */
+}
+
+/* Role-based visibility */
+.customer-only, .admin-only, .super-admin-only {
+    display: none;
+}
+
+body.customer .customer-only,
+body.admin .admin-only,
+body.admin .customer-only,
+body.super-admin .super-admin-only,
+body.super-admin .admin-only,
+body.super-admin .customer-only {
+    display: block;
+}

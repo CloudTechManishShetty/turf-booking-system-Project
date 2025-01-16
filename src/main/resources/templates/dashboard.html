@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turf Booking Dashboard</title>
+    <link rel="icon" href="/images/FindTurfLogo.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
+    <!-- <style>
+        body{
+            font-family: "Montserrat", sans-serif;
+            background-color: #050505;
+            margin: 0%;
+            padding:0%;
+            color: white;
+            text-align: center;
+        }
+
+        header{
+            height: 20%;
+            /* width:100%; */
+            display: flex;
+        }
+
+        footer{
+            height: 30%;
+        }
+
+        .navbar{
+            justify-content: flex-start;
+            width: 100%;
+            display: flex;
+            background-color: white;
+            position: fixed;
+        }
+
+        .nav-items{
+            display: flex;
+            width: 100%;
+            justify-content: end;
+            margin-right: 2rem;
+        }
+
+        .footer-sec{
+            display: flex;
+            height: 60px;
+            width: 98%;
+            padding-top: 2.5rem;
+            justify-content: center;
+        }
+
+        .rights{
+            display: flex;
+            justify-content: center;
+        }
+
+        .rights i{
+            margin-right: 2rem;
+        }
+
+        .footer-links a{
+            margin-left: 2rem;
+            text-decoration: none;
+            color: white;
+            margin-left: 15rem;
+        }
+
+        .nav-optionsi {
+            text-decoration: none;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin: 2rem;
+            font-weight: bolder;
+        }
+        .nav-optionsi:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Role-based visibility */
+        .customer-only, .admin-only, .super-admin-only {
+            display: none;
+        }
+
+        body.customer .customer-only,
+        body.admin .admin-only,
+        body.admin .customer-only,
+        body.super-admin .super-admin-only,
+        body.super-admin .admin-only,
+        body.super-admin .customer-only {
+            display: block;
+        }
+    </style> -->
+</head>
+<body>
+    <header>
+        <navbar class="navbar">
+            <div id="logo">
+                <img src="/images/logo.png" alt="sys-logo">
+            </div>
+            <div class="nav-items">
+                <a id="nav-home"  class="nav-optionsi" href="/dashboard">Home</a>
+                <a id="nav-turfs" class="nav-optionsi" href="/view_turf">Turfs</a>
+                <a id="nav-booking" class="nav-optionsi" href="/view_bookings">Bookings</a>
+                <a id="nav-about" class="nav-optionsi" href="/About">About</a>
+                <a id="nav-logout" class="nav-optionsi" href="/Logout">LogOut</a>
+                <!-- Role-specific nav items -->
+                <a id="nav-admin" href="#admin" class="admin-only">Admin</a>
+                <a href="#system" class="super-admin-only">System</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        
+    </section>
+
+    <main class="dashboard">
+        <!-- Customer Dashboard -->
+        <section class="customer-only">
+            <h2>My Bookings</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Upcoming Bookings</h3>
+                    <p>View and manage your upcoming turf bookings</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Booking History</h3>
+                    <p>Check your past bookings and reviews</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Favorite Turfs</h3>
+                    <p>Quick access to your preferred venues</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard -->
+        <section class="admin-only">
+            <h2>Admin Controls</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Booking Management</h3>
+                    <p>Manage all current and upcoming bookings</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Turf Management</h3>
+                    <p>Add, edit, or remove turf listings</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>User Management</h3>
+                    <p>Manage customer accounts and reviews</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Super Admin Dashboard -->
+        <section class="super-admin-only">
+            <h2>System Administration</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Admin Management</h3>
+                    <p>Manage admin accounts and permissions</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>System Settings</h3>
+                    <p>Configure global system parameters</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Analytics</h3>
+                    <p>View system-wide statistics and reports</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-sec">
+            <div class="rights">
+                <i class="fa-regular fa-copyright"></i>
+                <p style="color: white; margin-top: 0%;">Copywright 2024 By Manish Shetty lic:1-1-2005</p>
+            </div>
+            <div class="footer-links">
+                <a href="#termsandservice">Terms of Service</a>
+                <a href="#Privacy">Privacy</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        
+        // Function to set user role and update UI
+        function setUserRole(role) {
+            document.body.className = role;
+        }
+
+        // Example usage:
+        // setUserRole('customer');
+        // setUserRole('admin');
+        // setUserRole('super-admin');
+
+        
+
+        // Get the logout link element
+        const logoutLink = document.getElementById("nav-logout");
+
+        // Add click event listener
+        logoutLink.addEventListener("click", (event) => {
+            // Prevent the default anchor link behavior (i.e., the page will not reload)
+            event.preventDefault();
+
+            // Clear JWT token from localStorage
+            localStorage.removeItem('jwtToken');
+
+            // Clear cookies if token is stored there
+            document.cookie = "token=; path=/; max-age=0";
+            document.cookie = "userId=; path=/; max-age=0";
+            document.cookie = "email=; path=/; max-age=0";
+            document.cookie = "role=; path=/; max-age=0";
+
+            // Optionally, clear sessionStorage or other storage mechanisms
+            sessionStorage.clear();
+
+            // Redirect to the login page
+            window.location.href = '/login';  // You can change this URL to match your app's login route
+
+            // Optionally show a message
+            console.log("User logged out successfully.");
+        });
+
+    </script>
+</body>
+</html>

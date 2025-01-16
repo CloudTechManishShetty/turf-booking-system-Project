@@ -2,6 +2,9 @@ package com.turf.turf_booking_system.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 
 @Controller
@@ -17,9 +20,24 @@ public class ContentController {
         return "signup";
     }
 
-    @GetMapping("/Home")
+    @GetMapping("/FindYourTurf")
     public String Home() {
-        return "Home"; // This will map to src/main/resources/templates/Home.html
+        return "FindYourTurf"; // This will map to src/main/resources/templates/Home.html
     }
 
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+    
+    @GetMapping("/view_bookings")
+    public String viewBookings() {
+        return "view_bookings";
+    }
+    
+    @GetMapping("/view_turf")
+    public String viewTurfs() {
+        return "view_turf";
+    }
+    
 }

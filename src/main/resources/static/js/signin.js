@@ -38,7 +38,9 @@ const loginButton = document.getElementById("loginButton");
         
                 if (data && data.message === "Login successful") {
                     console.log("Shoul redirect to dashboard"); // Redirect on successful login
-                    window.location.href = '/dashboard';
+                    setTimeout(() => {
+                        window.location.href = "/dashboard"; // Redirect to dashboard
+                    }, 2000);
                 } else {
                     console.error("Login failed:", data ? data.message : "Unexpected response format");
                     showToast('errorToast', data ? data.message : "Login failed");

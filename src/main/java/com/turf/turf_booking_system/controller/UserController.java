@@ -29,7 +29,8 @@
     import com.turf.turf_booking_system.service.userService;
 
     import jakarta.servlet.http.Cookie;
-    import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
     import org.springframework.web.bind.annotation.PutMapping;
     import org.springframework.web.bind.annotation.RequestParam;
@@ -108,7 +109,7 @@
                 users user = userservice.findByEmail(email);
     
                 // Generate JWT token
-                String jwtToken = jwtUtil.generateToken(user.getUserId());
+                String jwtToken = jwtUtil.generateToken(user.getUserId(),user.getRole());
     
     
                 // return ResponseEntity.ok(loginResponse);
@@ -179,4 +180,15 @@
                 return ResponseEntity.ok(response);
             }
         }
+
+        //fetching user role
+        @GetMapping("/get-user-role")
+        public ResponseEntity<?> getUserRole(HttpServletRequest request) {
+            String token = jwtUtil.extractTokenFromCookie(request);
+            String role = jwtUtil.extractRole(token);
+            Map<String, String> response = new HashMap<>();
+            response.put("role", role);
+            return ResponseEntity.ok(response);
+        }
+
     }

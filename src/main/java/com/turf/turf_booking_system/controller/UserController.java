@@ -14,7 +14,8 @@
     import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
     import org.springframework.security.core.Authentication;
     import org.springframework.security.core.context.SecurityContextHolder;
-    import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
     import org.springframework.web.bind.annotation.GetMapping;
     import org.springframework.web.bind.annotation.PathVariable;
     import org.springframework.web.bind.annotation.PostMapping;
@@ -136,6 +137,20 @@ import jakarta.servlet.http.HttpServletResponse;
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("An error occurred during login");
             }
+        }
+
+        //logout api
+        @PostMapping("/logout")
+        public ResponseEntity<String> logout(HttpServletResponse response, @CookieValue(name = "token", required = false) String token) {
+            // Clear the token cookie
+            Cookie cookie = new Cookie("token", null);
+            cookie.setHttpOnly(true);
+            // cookie.setSecure(true); // Use true if your app uses HTTPS
+            cookie.setPath("/");
+            cookie.setMaxAge(0); // Set Max-Age to 0 to delete the cookie
+            response.addCookie(cookie);
+
+            return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
         }
 
         //To Update Users.

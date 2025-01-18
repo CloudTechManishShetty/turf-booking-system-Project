@@ -49,13 +49,13 @@ public class TurfController {
         return ResponseEntity.ok("Turf deleted successfully");
     }
 
-    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
+    @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
     @GetMapping
     public ResponseEntity<List<turfs>> listAllTurfs() {
         return ResponseEntity.ok(turfservice.listAllTurfs());
     }
 
-    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
+    @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
     @GetMapping("/search")
     public ResponseEntity<List<turfs>> searchTurfs(
             @RequestParam(required = false) String name,

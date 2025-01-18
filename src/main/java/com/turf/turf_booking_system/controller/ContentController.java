@@ -40,4 +40,9 @@ public class ContentController {
         return "view_turf";
     }
     
+    @GetMapping("/listTurfs")
+    public String ListTurfs() {
+        return "listTurfs";
+    }
+    
 }

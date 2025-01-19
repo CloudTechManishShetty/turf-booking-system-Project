@@ -2,9 +2,6 @@ package com.turf.turf_booking_system.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
 
 
 @Controller
@@ -43,6 +40,11 @@ public class ContentController {
     @GetMapping("/listTurfs")
     public String ListTurfs() {
         return "listTurfs";
+    }
+
+    @GetMapping("/bookturf")
+    public String bookTurf(){
+        return "book_turf";
     }
     
 }

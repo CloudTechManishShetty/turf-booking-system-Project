@@ -1,6 +1,7 @@
 package com.turf.turf_booking_system.service.iml;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,13 @@ public class turfServiceImplement implements turfService{
             return turfRepository.findAll();
         }
     }
+
+    @Override
+    public turfs getTurfById(Long turfId) {
+        Optional<turfs> turf = turfRepository.findById(turfId);
+        return turf.orElse(null);
+    }
+
+    
 
 }

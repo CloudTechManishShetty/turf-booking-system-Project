@@ -10,4 +10,5 @@ public interface turfService {
     public String deleteTurf(Long turfId);
     public List<turfs> listAllTurfs();
     public List<turfs> searchTurfs(String name, String location);
+    public turfs getTurfById(Long turfId);
 }

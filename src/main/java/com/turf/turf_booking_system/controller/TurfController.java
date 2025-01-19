@@ -62,4 +62,11 @@ public class TurfController {
             @RequestParam(required = false) String location) {
         return ResponseEntity.ok(turfservice.searchTurfs(name, location));
     }
+
+    @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
+    @GetMapping("/{turfId}")
+    public ResponseEntity<turfs> getTurfById(@PathVariable Long turfId) {
+        return ResponseEntity.ok(turfservice.getTurfById(turfId));
+    }
+
 }

@@ -13,7 +13,8 @@
     import org.springframework.security.authentication.BadCredentialsException;
     import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
     import org.springframework.security.core.Authentication;
-    import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
     import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +57,7 @@ import jakarta.servlet.http.HttpServletResponse;
         }
 
         //for Specific User based on ID.
-        @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
+        @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
         @GetMapping("{user_Id}")
         public users getUserDetails(@PathVariable("user_Id") Long user_Id) {
             return userservice.getUser(user_Id);
@@ -74,7 +75,7 @@ import jakarta.servlet.http.HttpServletResponse;
         }
 
         //for All users in Databse.
-        @PreAuthorize("hasRole('super_admin')")
+        @PreAuthorize("hasRole('super_admin') or hasRole('customer')")
         @GetMapping
         public List<users> getAllUsers() {
             return userservice.getAllUser();
@@ -154,7 +155,7 @@ import jakarta.servlet.http.HttpServletResponse;
         }
 
         //To Update Users.
-        @PreAuthorize("hasRole('user') or hasRole('super_admin')")
+        @PreAuthorize("hasRole('customer') or hasRole('super_admin')")
         @PutMapping
         public String updateUser(@RequestBody users user) {
             userservice.updateUser(user);
@@ -205,5 +206,16 @@ import jakarta.servlet.http.HttpServletResponse;
             response.put("role", role);
             return ResponseEntity.ok(response);
         }
+
+        @PreAuthorize("hasRole('customer')")
+        @GetMapping("/me")
+        public ResponseEntity<?> getLoggedInUser(HttpServletRequest request) {
+            String token = jwtUtil.extractTokenFromCookie(request);
+            String userId = jwtUtil.extractUsername(token);
+            Map<String, String> response = new HashMap<>();
+            response.put("user_id", userId);
+            return ResponseEntity.ok(response);
+        }
+
 
     }

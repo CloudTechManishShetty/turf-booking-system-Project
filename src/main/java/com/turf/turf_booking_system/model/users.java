@@ -6,10 +6,13 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @Entity
 public class users implements UserDetails{
@@ -22,6 +25,9 @@ public class users implements UserDetails{
     private String password;
     private String role;
     private boolean isApproved;
+    @JsonIgnore // Prevent serialization of authorities
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities;
 
     //Constructor
     public users(Long id,String name,String email,String phone,String password,String role,boolean apprStatus){

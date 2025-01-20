@@ -26,7 +26,7 @@ public class BookingController {
     @Autowired
     private com.turf.turf_booking_system.service.bookingService bookingService;
 
-    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
+    @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
     @PostMapping
     public ResponseEntity<bookings> createBooking(@RequestBody bookings booking) {
         bookings newBooking = bookingService.createBooking(booking);
@@ -45,7 +45,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getBookingsByUser(userId));
     }
 
-    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
+    @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
     @GetMapping("/date")
     public ResponseEntity<List<bookings>> getBookingsByDate(@RequestParam LocalDate date) {
         return ResponseEntity.ok(bookingService.getBookingsByDate(date));

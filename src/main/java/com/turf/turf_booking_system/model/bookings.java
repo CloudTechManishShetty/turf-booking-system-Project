@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,22 +19,22 @@ public class bookings {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long booking_id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_Id", nullable = false)
     private users user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "turf_id", nullable = false)
     private turfs turf;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "slot_id", nullable = false)
     private Slot slot;
 
-    @Column(nullable = false)
+    @Column(name = "booking_date", nullable = false)
     private LocalDate booking_date;
 
-    @Column(nullable = false)
+    @Column(name = "total_price", nullable = false)
     private Double total_price;
 
     @Column(nullable = false)

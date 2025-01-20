@@ -32,7 +32,7 @@ public class TimeSlotController {
         return ResponseEntity.ok(newSlot);
     }
 
-    @PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('super_admin')")
+    @PreAuthorize("hasRole('customer') or hasRole('admin') or hasRole('super_admin')")
     @GetMapping
     public ResponseEntity<List<Slot>> getSlotsByTurfAndDate(
         @RequestParam Long turfId, @RequestParam LocalDate date) {

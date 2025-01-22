@@ -9,9 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         header{
@@ -103,7 +109,7 @@
             </nav>
         </div>
     </header>
-    <main class="customer-only flex-grow customer">
+    <main class="customer-only flex-grow">
         <section class="bg-green-100 py-12">
             <div class="container mx-auto px-4">
                 <h1 class="text-4xl font-bold text-center mb-6">Book Your Perfect Turf</h1>
@@ -116,7 +122,7 @@
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <button id="searchButton" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;padding-right: 20px; margin-left: 1px; width: 6rem; height: 2rem; " class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center justify-center w-full md:w-auto">
+                        <button id="searchButton" class="bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center justify-center w-full md:w-auto">
                             Search Turfs
                         </button>
                     </div>
@@ -127,46 +133,8 @@
         <section class="py-12">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-semibold mb-8 text-center">Featured Turfs</h2>
-                <div  id="turfsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="/placeholder.svg?height=200&width=300" alt="Green Valley Football Turf" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2">Green Valley Football Turf</h3>
-                            <p class="text-gray-600 mb-2">Football</p>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <span class="ml-1">4.5</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="/placeholder.svg?height=200&width=300" alt="Cricket Paradise" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2">Cricket Paradise</h3>
-                            <p class="text-gray-600 mb-2">Cricket</p>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <span class="ml-1">4.8</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="/placeholder.svg?height=200&width=300" alt="Multi-Sport Arena" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2">Multi-Sport Arena</h3>
-                            <p class="text-gray-600 mb-2">Football, Cricket</p>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <span class="ml-1">4.2</span>
-                            </div>
-                        </div>
-                    </div>
+                <div id="turfsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Turfs will be dynamically inserted here -->
                 </div>
             </div>
         </section>
@@ -236,44 +204,6 @@
         </div>
     </footer>
 
-        <!-- Admin Dashboard
-        <section class="admin-only">
-            <h2>Admin Controls</h2>
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <h3>Booking Management</h3>
-                    <p>Manage all current and upcoming bookings</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Turf Management</h3>
-                    <p>Add, edit, or remove turf listings</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>User Management</h3>
-                    <p>Manage customer accounts and reviews</p>
-                </div>
-            </div>
-        </section>
-
-        Super Admin Dashboard
-        <section class="super-admin-only">
-            <h2>System Administration</h2>
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <h3>Admin Management</h3>
-                    <p>Manage admin accounts and permissions</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>System Settings</h3>
-                    <p>Configure global system parameters</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Analytics</h3>
-                    <p>View system-wide statistics and reports</p>
-                </div>
-            </div>
-        </section>
-    </main> -->
     <script>
         
         fetch('/api/users/get-user-role', {
@@ -315,9 +245,14 @@
 
         //serch Turfs
         document.getElementById("searchButton").addEventListener("click", function() {
-            const location = document.getElementById("searchInput").value;
+            const searchInput = document.getElementById("searchInput").value;
+            const [name, location] = searchInput.split(',').map(s => s.trim());
 
-            fetch(`/api/turfs/search?location=${location}`,{
+            let url = '/api/turfs/search?';
+            if (name) url += `name=${name}&`;
+            if (location) url += `location=${location}`;
+
+            fetch(url, {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -328,24 +263,34 @@
                 .catch(error => console.error('Error:', error));
         });
 
+        // Fetch and display turfs from the database
+        fetch('/api/turfs', {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayTurfs(data);
+        })
+        .catch(error => console.error('Error:', error));
+
         function displayTurfs(turfs) {
             const turfsContainer = document.getElementById("turfsContainer");
             turfsContainer.innerHTML = "";
 
             turfs.forEach(turf => {
                 const turfElement = document.createElement("div");
+                turfElement.className = "bg-white rounded-lg shadow-md overflow-hidden";
                 turfElement.innerHTML = `
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src=${turf.image} alt="Green Valley Football Turf" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-semibold mb-2">${turf.name}</h3>
-                            <p class="text-gray-600 mb-2">${turf.location}</p>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <span class="ml-1">4.5</span>
-                            </div>
+                    <img src="${turf.image}" alt="${turf.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold mb-2">${turf.name}</h3>
+                        <p class="text-gray-600 mb-2">${turf.location}</p>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            <span class="ml-1">4.5</span>
                         </div>
                     </div>
                 `;
@@ -355,5 +300,6 @@
 
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/turfs.js"></script>
 </body>
 </html>

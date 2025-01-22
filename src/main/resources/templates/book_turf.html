@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Turf</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -22,7 +24,12 @@
         <div id="time-slots" class="hidden">
             <label class="block text-gray-700 font-semibold mb-2">Available Time Slots:</label>
             <div class="flex flex-wrap gap-2">
-                <!-- Time slots will be dynamically inserted here -->
+                <button class="time-slot-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    data-time="10:00 to 11:00 am">10:00 to 11:00 AM</button>
+                <button class="time-slot-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    data-time="11:00 to 12:00 pm">11:00 to 12:00 PM</button>
+                <button class="time-slot-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    data-time="12:00 to 01:00 pm">12:00 to 01:00 PM</button>
             </div>
         </div>
 
@@ -44,7 +51,95 @@
     </div>
 
     <script>
-        
+        // Function to get query parameters from the URL
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const regex = /([^&=]+)=([^&]*)/g;
+            let m;
+            while (m = regex.exec(queryString)) {
+                params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            }
+            return params;
+        }
+
+        const timeSlots = document.getElementById('time-slots');
+        const proceedContainer = document.getElementById('proceed-container');
+        const proceedButton = document.getElementById('proceed-btn');
+        const modal = document.getElementById('confirmation-modal');
+        const confirmationMessage = document.getElementById('confirmation-message');
+
+        function showTimeSlots() {
+            const params = getQueryParams();
+            const turfId = params.turf_id;
+            const selectedDate = document.getElementById('date').value;
+
+            if (turfId && selectedDate) {
+                fetch(`http://localhost:8080/api/slots?turfId=${encodeURIComponent(turfId)}&date=${encodeURIComponent(selectedDate)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const timeSlotContainer = document.querySelector('#time-slots .flex');
+                        timeSlotContainer.innerHTML = ''; // Clear existing slots
+                        data.forEach(slot => {
+                            const btn = document.createElement('button');
+                            btn.className = 'time-slot-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
+                            btn.dataset.time = slot.time;
+                            btn.textContent = slot.time;
+                            timeSlotContainer.appendChild(btn);
+                        });
+                        timeSlots.classList.remove('hidden');
+                        attachTimeSlotListeners();
+                    })
+                    .catch(error => console.error('Error fetching time slots:', error));
+            }
+        }
+
+        function attachTimeSlotListeners() {
+            document.querySelectorAll('.time-slot-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.time-slot-btn').forEach(slot => slot.classList.remove('bg-blue-600', 'ring', 'ring-blue-400'));
+                    e.target.classList.add('bg-blue-600', 'ring', 'ring-blue-400');
+                    proceedButton.dataset.selectedTime = e.target.dataset.time;
+                    proceedContainer.classList.remove('hidden');
+                });
+            });
+        }
+
+        function proceed() {
+            const params = getQueryParams();
+            const turfId = params.turf_id;
+            const selectedDate = document.getElementById('date').value;
+            const selectedTime = proceedButton.dataset.selectedTime;
+
+            if (!selectedDate || !selectedTime) {
+                alert('Please select a date and time slot before proceeding.');
+                return;
+            }
+
+            const booking = {
+                turfId: turfId,
+                date: selectedDate,
+                time: selectedTime
+            };
+
+            fetch('http://localhost:8080/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(booking)
+            })
+            .then(response => response.json())
+            .then(data => {
+                confirmationMessage.textContent = `Your booking for ${selectedDate} at ${selectedTime} has been confirmed. Booking ID: ${data.id}`;
+                modal.classList.remove('hidden');
+            })
+            .catch(error => console.error('Error creating booking:', error));
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
     </script>
 </body>
 

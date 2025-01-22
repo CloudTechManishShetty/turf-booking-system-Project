@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleProtectedRoute(){
         const token = getCookie("jwtToken");
         if(token){
-            fetch("http://localhost:8080/api/users/validateToken",{
+            fetch("http://localhost:4444/api/users/validateToken",{
                 method:"GET",
                 headers:{
                     "Authorization": `Bearer ${token}`

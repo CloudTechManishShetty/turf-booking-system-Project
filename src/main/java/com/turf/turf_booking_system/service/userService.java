@@ -12,4 +12,7 @@ public interface userService {
     public List<users> getUsers(String name);
     public List<users> getAllUser();
     public users findByEmail(String email);
+    public List<users> getPendingAdmins();
+    public Boolean getIsApproved(Long userId);
+    public void approveAdmin(Long userId);
 }

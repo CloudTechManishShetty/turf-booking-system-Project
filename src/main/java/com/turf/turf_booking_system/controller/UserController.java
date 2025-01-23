@@ -13,10 +13,10 @@
     import org.springframework.security.authentication.BadCredentialsException;
     import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
     import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.DeleteMapping;
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
+    import org.springframework.security.core.context.SecurityContextHolder;
+    import org.springframework.web.bind.annotation.CookieValue;
+    import org.springframework.web.bind.annotation.DeleteMapping;
     import org.springframework.web.bind.annotation.GetMapping;
     import org.springframework.web.bind.annotation.PathVariable;
     import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
     import com.turf.turf_booking_system.service.userService;
 
     import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+    import jakarta.servlet.http.HttpServletRequest;
+    import jakarta.servlet.http.HttpServletResponse;
 
     import org.springframework.web.bind.annotation.PutMapping;
     import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +44,7 @@ import jakarta.servlet.http.HttpServletResponse;
     public class UserController {
         
 
+        users manager;
         @Autowired
         private JwtUtil jwtUtil;
 
@@ -110,6 +111,9 @@ import jakarta.servlet.http.HttpServletResponse;
                 // Fetch the user from the database
                 users user = userservice.findByEmail(email);
     
+                if ("admin".equals(user.getRole()) && !user.isApproved()) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Admin account not approved");
+                }
                 // Generate JWT token
                 String jwtToken = jwtUtil.generateToken(user.getUserId(),user.getRole());
     
@@ -207,15 +211,39 @@ import jakarta.servlet.http.HttpServletResponse;
             return ResponseEntity.ok(response);
         }
 
-        @PreAuthorize("hasRole('customer')")
+        //Remember this there can issue here
+        @PreAuthorize("hasRole('customer') or hasRole('admin')")
         @GetMapping("/me")
         public ResponseEntity<?> getLoggedInUser(HttpServletRequest request) {
             String token = jwtUtil.extractTokenFromCookie(request);
             String userId = jwtUtil.extractUsername(token);
+            Long userid = Long.parseLong(userId);
+            manager = userservice.getUser(userid);
             Map<String, String> response = new HashMap<>();
             response.put("user_id", userId);
             return ResponseEntity.ok(response);
         }
 
+        public users getManagerLoggedIn(){
+            return manager;
+        }
+
+        @GetMapping("/api/admins/pending")
+        public ResponseEntity<List<users>> getPendingAdmins() {
+            List<users> pendingAdmins = userservice.getPendingAdmins();
+            return ResponseEntity.ok(pendingAdmins);
+        }
+        
+        @PutMapping("/api/admins/approve/{userId}")
+        public ResponseEntity<String> approveAdmin(@PathVariable Long userId) {
+            userservice.approveAdmin(userId);
+            return ResponseEntity.ok("Admin approved successfully");
+        }
+
+        @GetMapping("/api/users/{userId}/is-approved")
+        public ResponseEntity<Boolean> getIsApproved(@PathVariable Long userId) {
+            Boolean isApproved = userservice.getIsApproved(userId);
+            return ResponseEntity.ok(isApproved);
+        }
 
     }

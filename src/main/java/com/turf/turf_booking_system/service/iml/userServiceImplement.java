@@ -116,6 +116,23 @@ public class userServiceImplement implements userService, UserDetailsService{
         );
     }
 
+    @Override
+    public List<users> getPendingAdmins() {
+        return userRepository.findByRoleAndIsApproved("admin", false);
+    }
+
+    @Override
+    public Boolean getIsApproved(Long userId) {
+        users user = getUser(userId);
+        return user.isApproved();
+    }
+
+    @Override
+    public void approveAdmin(Long userId) {
+        users user = getUser(userId);
+        user.setApproved(true);
+        userRepository.saveAndFlush(user);
+    }
     
 
 }

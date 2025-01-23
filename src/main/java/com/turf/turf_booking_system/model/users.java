@@ -2,18 +2,25 @@ package com.turf.turf_booking_system.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 public class users implements UserDetails{
     @Id
@@ -25,6 +32,18 @@ public class users implements UserDetails{
     private String password;
     private String role;
     private boolean isApproved;
+    
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
+    private List<turfs> turfs;
+
+    public List<turfs> getTurfs() {
+        return turfs;
+    }
+
+    public void setTurfs(List<turfs> turfs) {
+        this.turfs = turfs;
+    }
+
     @JsonIgnore // Prevent serialization of authorities
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

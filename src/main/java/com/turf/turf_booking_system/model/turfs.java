@@ -2,14 +2,21 @@ package com.turf.turf_booking_system.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -43,6 +50,19 @@ public class turfs {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JsonIgnore // Prevent recursion
+    @JoinColumn(name = "manager_id", nullable = false)  // Foreign key column
+    private users manager;  // The manager of this turf (mapped to user)
+
+    public users getManager() {
+        return manager;
+    }
+
+    public void setManager(users manager) {
+        this.manager = manager;
+    }
 
     //getters and Setter
     public Long getTurf_id() {

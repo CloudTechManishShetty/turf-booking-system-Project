@@ -13,7 +13,7 @@ const loginButton = document.getElementById("loginButton");
             const data = { email, password };
             const jsonData = JSON.stringify(data);
 
-            fetch('http://localhost:4444/api/users/login', {
+            fetch('http://localhost:8080/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

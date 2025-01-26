@@ -47,4 +47,8 @@ public class ContentController {
         return "book_turf";
     }
     
+    @GetMapping("/superadmin")
+    public String superAdmin(){
+        return "super_admin_panel";
+    }
 }

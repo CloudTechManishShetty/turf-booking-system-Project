@@ -213,12 +213,14 @@
         .then(data => {
             console.log("User role:", data.role);
             document.body.className = data.role;
-            let role = document.getElementsByClassName('role')
-            console.log(role);
+            if (data.role === "super_admin") {
+                window.location.href = '/superadmin';
+            }
             // Redirect or show content based on the role
         }).catch(error => {
             console.error("Error fetching role:", error);
         });
+
 
         const logbtn = document.getElementById("logout");
         logbtn.addEventListener('click',(event) => {

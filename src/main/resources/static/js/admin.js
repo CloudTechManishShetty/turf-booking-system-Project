@@ -234,6 +234,9 @@ document.addEventListener('DOMContentLoaded', function () {
 async function renderTurfs() {
     const turfsTableBody = document.getElementById('turfsTableBody');
     const userData = await getUserDetails();
+    const profile = document.getElementById('prfname');
+    profile.textContent = userData.username;
+
     const turfs = userData.turfs;
     console.log(turfs);
     // Update the turf count
@@ -328,27 +331,47 @@ function renderTurfWithBookings(turf, bookings) {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.booking_date}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.slot.start_time} - ${booking.slot.end_time}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.status}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="#" class="text-green-600 hover:text-green-900" title="Approve" onclick="updateBookingStatus(${booking.booking_id}, 'approved')">
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" style="width: 6%;">
+                    <button 
+                        style="margin-left: 20px; padding: 10px; background-color: white; transition: transform 0.6s ease-in-out;" 
+                        class="text-green-600 hover:text-green-900 bg-transparent border cursor-pointer p-0 ml-2 grow-on-hover" 
+                        title="Approve" 
+                        onclick="updateBookingStatus(${booking.booking_id}, 'approved')">
                         &#10003; <!-- Checkmark symbol -->
-                    </a>
-                    <a href="#" class="text-red-600 hover:text-red-900 ml-2" title="Reject" onclick="updateBookingStatus(${booking.booking_id}, 'rejected')">
+                    </button>
+                    <button 
+                        style="margin-left: 20px; padding: 10px; background-color: white; transition: transform 0.6s ease-in-out;" 
+                        class="text-red-600 hover:text-red-900 bg-transparent border cursor-pointer p-0 ml-2 grow-on-hover" 
+                        title="Reject" 
+                        onclick="updateBookingStatus(${booking.booking_id}, 'rejected')">
                         &#10005; <!-- Cross symbol -->
-                    </a>
+                    </button>
                 </td>
             </tr>
         `;
         bookingsTableBody.innerHTML += row;
     });
+    const dasTable = document.getElementById('dashTable');
+    bookings.forEach(booking => {
+        const row = `
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.booking_id}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.user.username}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.turf.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.booking_date} & ${booking.slot.start_time} - ${booking.slot.end_time}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.status}</td>
+            </tr>
+        `;
+        dasTable.innerHTML += row;
+    })
 }
 
 //Updating the Booking Status
 function updateBookingStatus(bookingId, status) {
-    const apiUrl = `/api/bookings/${bookingId}/${status}`; // Include status as a query parameter
-
-    fetch(apiUrl, {
-        'method': 'PUT', // Use PUT since you're updating the status
-        'credentials': 'include'
+    console.log(bookingId,status);
+    fetch(`/api/bookings/${bookingId}/${status}`, {
+        method: 'PUT', // Use PUT since you're updating the status
+        credentials: 'include'
     })
     .then(response => response.json())
     .then(updatedBooking => {
@@ -358,6 +381,7 @@ function updateBookingStatus(bookingId, status) {
     .catch(error => {
         console.error('Error updating booking status:', error);
     });
+    fetchAndRenderAllTurfs();
 }
 
 async function fetchAndRenderAllTurfs() {

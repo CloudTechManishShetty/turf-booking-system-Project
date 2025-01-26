@@ -10,6 +10,8 @@ import com.turf.turf_booking_system.model.bookings;
 import com.turf.turf_booking_system.repository.BookingRepository;
 import com.turf.turf_booking_system.service.bookingService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class bookingServiceImplement implements bookingService {
 
@@ -38,6 +40,7 @@ public class bookingServiceImplement implements bookingService {
     }
 
     @Override
+    @Transactional
     public bookings updateBookingStatus(Long bookingId, String status) {
         bookingRepository.updateBookingStatus(bookingId, status);
         return bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));

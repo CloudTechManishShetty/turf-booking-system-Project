@@ -52,5 +52,10 @@ public class ContentController {
     public String adminPanel() {
         return "adminPanel";
     }
+
+    @GetMapping("/superadmin")
+    public String superAdmin(){
+        return "super_admin_panel";
+    }
     
 }

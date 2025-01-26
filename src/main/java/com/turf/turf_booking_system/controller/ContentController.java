@@ -2,7 +2,6 @@ package com.turf.turf_booking_system.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -52,6 +51,11 @@ public class ContentController {
     @GetMapping("/adminPanel")
     public String adminPanel() {
         return "adminPanel";
+    }
+
+    @GetMapping("/superadmin")
+    public String superAdmin(){
+        return "super_admin_panel";
     }
     
 }

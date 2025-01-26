@@ -57,5 +57,10 @@ public class ContentController {
     public String superAdmin(){
         return "super_admin_panel";
     }
+
+    @GetMapping("/editTurf")
+    public String editTurf(){
+        return "edit_turf";
+    }
     
 }

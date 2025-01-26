@@ -7,33 +7,6 @@ function showSection(sectionName) {
     document.getElementById('sectionTitle').innerText = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
 }
 
-// Bookings management
-let bookings = [
-    { id: 1, customer: 'John Doe', turf: 'Football Field 1', date: '2023-05-20', time: '14:00-16:00', status: 'Confirmed' },
-    { id: 2, customer: 'Jane Smith', turf: 'Cricket Pitch', date: '2023-05-21', time: '10:00-13:00', status: 'Pending' },
-    { id: 3, customer: 'Mike Johnson', turf: 'Multi-Sport Arena', date: '2023-05-22', time: '18:00-19:00', status: 'Confirmed' },
-];
-
-function renderBookings() {
-    const bookingsTableBody = document.getElementById('bookingsTableBody');
-    bookingsTableBody.innerHTML = '';
-    bookings.forEach(booking => {
-        const row = `
-            <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.customer}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.turf}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.date}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.time}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.status}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                </td>
-            </tr>
-        `;
-        bookingsTableBody.innerHTML += row;
-    });
-}
-
 function showTurfForm() {
     document.getElementById('turfFormModal').classList.remove('hidden');
 }
@@ -44,26 +17,87 @@ function hideTurfForm() {
     document.getElementById('turfId').value = '';
 }
 
-function handleTurfSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const turfData = {
-        id: document.getElementById('turfId').value || Date.now(),
-        name: formData.get('turfName'),
-        type: formData.get('turfType'),
-        capacity: parseInt(formData.get('turfCapacity')),
-        price: parseFloat(formData.get('turfPrice'))
-    };
+async function addTimeSlotForm(turfId) {
+    let turfD;
+    try {
+        const turf = await fetch(`/api/turfs/${turfId}`, { // Use backticks for template literals
+            method: 'GET',
+            credentials: 'include' // Important for session/cookie handling
+        });
 
-    const existingTurfIndex = turfs.findIndex(t => t.id == turfData.id);
-    if (existingTurfIndex !== -1) {
-        turfs[existingTurfIndex] = turfData;
-    } else {
-        turfs.push(turfData);
+        if (!turf.ok) {
+            // Handle HTTP errors properly
+            const errorText = await turf.text(); // Get error message from server
+            throw new Error(`HTTP error ${turf.status}: ${errorText}`);
+        }
+
+        const turfData = await turf.json(); // Parse JSON response
+        turfD = turfData;
+        console.log("Turf Data:", turfData);
+    } catch (error) {
+        console.error("Error fetching turf:", error);
+        alert("An error occurred while fetching turf data."); // Inform the user
     }
+    console.log('Add Time Slot for Turf ID:', turfId);
 
-    renderTurfs();
-    hideTurfForm();
+    document.getElementById('addTime').addEventListener('click', async function (event) {
+        event.preventDefault();
+
+        const bookingDate = document.getElementById('bookingDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+
+        // Convert time strings to objects
+        const startTimeParts = startTime.split(':');
+        const endTimeParts = endTime.split(':');
+
+        const requestBody = {
+            turf: turfD,
+            start_time: `${startTimeParts[0].padStart(2, '0')}:${startTimeParts[1].padStart(2, '0')}:00`, // Format as "HH:mm:ss"
+            end_time: `${endTimeParts[0].padStart(2, '0')}:${endTimeParts[1].padStart(2, '0')}:00`,     // Format as "HH:mm:ss"
+            date: bookingDate,
+            isAvailable: true // Default availability
+        };
+        console.log("Request Body:", requestBody);
+        try {
+            // Make the POST request
+            const response = await fetch('/api/slots', {
+                method: 'POST',
+                credentials: 'include', // Include credentials for cookies/authentication
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            });
+    
+            // Handle response
+            if (!response.ok) {
+                const errorText = await response.text(); // Await the response text
+                throw new Error(`HTTP error ${response.status}: ${errorText}`);
+            }
+    
+            const responseData = await response.json(); // Await the JSON response
+            console.log("Success:", responseData);
+            alert("TimeSlot created successfully!");
+    
+            // Clear the form fields after successful submission
+            document.getElementById('bookingDate').value = '';
+            document.getElementById('startTime').value = '';
+            document.getElementById('endTime').value = '';
+            document.getElementById('price').value = '';
+            form.classList.add('hidden'); // Hide the form
+        } catch (error) {
+            console.error("Error creating Slot:", error);
+            alert("An error occurred while creating the Timeslot. Please try again.");
+        }
+        hideTimeslotForm();
+    });
+}
+
+
+function hideTimeslotForm() {
+    document.getElementById('timeslotForm').classList.add('hidden');
+    document.getElementById('form').reset();
 }
 
 function editTurf(id) {
@@ -79,13 +113,37 @@ function editTurf(id) {
 }
 
 function deleteTurf(id) {
-    if (confirm('Are you sure you want to delete this turf?')) {
-        turfs = turfs.filter(t => t.id != id);
-        renderTurfs();
+    
+}
+
+async function getUserDetails() {
+    try {
+        // Fetch the logged-in user's basic information
+        const userResponse = await fetch('/api/users/me', { method: 'GET', credentials: 'include' });
+        if (!userResponse.ok) {
+            throw new Error(`Failed to fetch user info: ${await userResponse.text()}`);
+        }
+        const userData = await userResponse.json();
+        const userId = userData.user_id;
+
+        console.log(`User ID: ${userId}`);
+
+        // Fetch the full user details using the user ID
+        const userDetailsResponse = await fetch(`/api/users/${userId}`, { method: 'GET', credentials: 'include' });
+        if (!userDetailsResponse.ok) {
+            throw new Error(`Failed to fetch user details: ${await userDetailsResponse.text()}`);
+        }
+        const userDetails = await userDetailsResponse.json();
+
+        console.log('User Details:', userDetails);
+
+        return userDetails; // Return the user details
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        throw error; // Re-throw the error for further handling if needed
     }
 }
 
-let userId = null;
 document.getElementById('save').addEventListener('click', async function (event) {
     event.preventDefault(); // Prevent form submission
 
@@ -132,19 +190,7 @@ document.getElementById('save').addEventListener('click', async function (event)
     }
 
     try {
-        // Fetch logged-in user
-        const userResponse = await fetch('/api/users/me', { method: 'GET', credentials: 'include' });
-        if (!userResponse.ok) throw new Error(`User fetch failed: ${await userResponse.text()}`);
-        const userData = await userResponse.json();
-        const userid = userData.user_id;
-        console.log(userid);
-        userId = userid;
-
-        const user = await fetch(`/api/users/${userId}`, { method: 'GET', credentials: 'include' });
-        if (!user.ok) throw new Error(`User fetch failed: ${await user.text()}`);
-        const userD = await user.json();
-        console.log(userD);
-
+        const userD = await getUserDetails();
         // Create FormData to handle file upload
         const formData = new FormData();
         formData.append('name', name);
@@ -177,37 +223,26 @@ document.getElementById('save').addEventListener('click', async function (event)
     }
 });
 
-// Turfs management
+// Turfs management and Bookings
 document.addEventListener('DOMContentLoaded', function () {
-    const userId = 66; // Replace with dynamic userId if needed
-    fetch(`/api/users/${userId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // Parse JSON response
-        })
-        .then(userData => {
-            // Access the turfs array
-            const turfs = userData.turfs;
-
-            // Update the turf count
-            const turfCount = document.getElementById('Turfcnt');
-            turfCount.textContent = turfs.length; // Display number of turfs
-
-            // Render turfs in the table
-            renderTurfs(turfs);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    // Render turfs in the table
+    renderTurfs();
+    //Bookings in Table
+    fetchAndRenderAllTurfs();
 });
 
-function renderTurfs(turfs) {
+async function renderTurfs() {
     const turfsTableBody = document.getElementById('turfsTableBody');
+    const userData = await getUserDetails();
+    const turfs = userData.turfs;
+    console.log(turfs);
+    // Update the turf count
+    const turfCount = document.getElementById('Turfcnt');
+    turfCount.textContent = turfs.length; // Display number of turfs
     turfsTableBody.innerHTML = ''; // Clear existing rows
 
     turfs.forEach(turf => {
+        const timeslotButtonId = `timeslotbtn${turf.turf_id}`;
         const row = `
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${turf.name}</td>
@@ -215,19 +250,131 @@ function renderTurfs(turfs) {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${turf.pricePerHour}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${turf.ground_width} x ${turf.ground_length} x ${turf.ground_height}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(turf.createdAt).toLocaleString()}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button onclick="editTurf(${turf.turf_id})" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
-                    <button onclick="deleteTurf(${turf.turf_id})" class="text-red-600 hover:text-red-900">Delete</button>
+                <td style="display: flex; align-items: center;" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button style="margin: 9px; background-color: #0000ff7a; height: 30px; width: 60px; border-radius: 8px; color: white" onclick="editTurf(${turf.turf_id})" class="text-white-800 hover:text-grey-900 mr-2">Edit</button>
+                    <button style="margin: 9px; background-color:rgb(210, 33, 33); height: 30px; width: 60px; border-radius: 8px; color: white" onclick="deleteTurf(${turf.turf_id})" class="text-white-800 hover:text-grey-900">Delete</button>
+                    <button class="timeslot-btn" data-turf-id="${turf.turf_id}" style="margin: 9px; background-color:rgb(12, 242, 238); height: 30px; width: 70px; border-radius: 8px; color: black">Timeslots</button>
                 </td>
             </tr>
         `;
         turfsTableBody.innerHTML += row;
+        attachTimeslotListeners();
     });
 }
 
+function attachTimeslotListeners() {
+    // Select all buttons with the class 'timeslot-btn'
+    const timeslotButtons = document.querySelectorAll('.timeslot-btn');
+    
+    // Add click event listener to each button
+    timeslotButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const turfId = button.dataset.turfId; // Get turf_id from the data attribute
+            OpenTimeSlot(turfId); // Call the addTimeSlotForm function with turfId
+        });
+    });
+}
+
+function OpenTimeSlot(turfId) {
+    // Display the form
+    const form = document.getElementById('timeslotForm');
+    form.classList.remove('hidden'); // Show the form
+    addTimeSlotForm(turfId);
+}
+
+// Bookings management
+
+async function fetchBookingsForAllTurfs(turfs) {
+    const bookingsTableBody = document.getElementById('bookingsTableBody');
+    bookingsTableBody.innerHTML = ''; // Clear the table body
+
+    for (const turf of turfs) {
+        try {
+            const response = await fetch(`/api/bookings/turf/${turf.turf_id}`,{
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch bookings for Turf ID ${turf.turf_id}: ${response.statusText}`);
+            }
+
+            const bookings = await response.json(); // Assuming the API returns a JSON response
 
 
+            // Render each turf's bookings
+            renderTurfWithBookings(turf, bookings);
+        } catch (error) {
+            console.error(`Error fetching bookings for Turf ID ${turf.turf_id}:`, error);
+        }
+    }
+}
+let cnt = 0;
+function renderTurfWithBookings(turf, bookings) {
+    //Count of Bookings:
+    if(bookings){
+        cnt += bookings.length;
+        console.log(cnt);
+        const bookcnt = document.getElementById('upcbook');
+            if (bookcnt) {
+                bookcnt.textContent = cnt; // Update the text with the bookings count
+            }
+    }
+    const bookingsTableBody = document.getElementById('bookingsTableBody');
+    bookings.forEach(booking => {
+        const row = `
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.user.username}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.turf.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.booking_date}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.slot.start_time} - ${booking.slot.end_time}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${booking.status}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a href="#" class="text-green-600 hover:text-green-900" title="Approve" onclick="updateBookingStatus(${booking.booking_id}, 'approved')">
+                        &#10003; <!-- Checkmark symbol -->
+                    </a>
+                    <a href="#" class="text-red-600 hover:text-red-900 ml-2" title="Reject" onclick="updateBookingStatus(${booking.booking_id}, 'rejected')">
+                        &#10005; <!-- Cross symbol -->
+                    </a>
+                </td>
+            </tr>
+        `;
+        bookingsTableBody.innerHTML += row;
+    });
+}
 
-// // Initial render
-// renderBookings();
-// renderTurfs();
+//Updating the Booking Status
+function updateBookingStatus(bookingId, status) {
+    const apiUrl = `/api/bookings/${bookingId}/${status}`; // Include status as a query parameter
+
+    fetch(apiUrl, {
+        'method': 'PUT', // Use PUT since you're updating the status
+        'credentials': 'include'
+    })
+    .then(response => response.json())
+    .then(updatedBooking => {
+        alert('Booking status updated successfully!');
+        // Handle UI updates here
+    })
+    .catch(error => {
+        console.error('Error updating booking status:', error);
+    });
+}
+
+async function fetchAndRenderAllTurfs() {
+    try {
+        const response = await getUserDetails(); 
+        console.log("Response:", response);
+
+        // Check if turfs exist in the response
+        if (response && response.turfs) {
+            const turfs = response.turfs;
+            console.log("Turfs:", turfs);
+            await fetchBookingsForAllTurfs(turfs); // Process turfs
+        } else {
+            console.log("Error: Turfs data is missing in the response.");
+        }
+    } catch (error) {
+        console.error('Error fetching turfs:', error);
+    }
+}
+

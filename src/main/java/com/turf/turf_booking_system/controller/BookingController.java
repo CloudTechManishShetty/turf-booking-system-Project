@@ -52,9 +52,9 @@ public class BookingController {
     }
 
     @PreAuthorize("hasRole('admin') or hasRole('super_admin')")
-    @PutMapping("/{bookingId}/status")
+    @PutMapping("/{bookingId}/{status}")
     public ResponseEntity<bookings> updateBookingStatus(
-            @PathVariable Long bookingId, @RequestParam String status) {
+            @PathVariable Long bookingId, @PathVariable String status) {
         return ResponseEntity.ok(bookingService.updateBookingStatus(bookingId, status));
     }
 }

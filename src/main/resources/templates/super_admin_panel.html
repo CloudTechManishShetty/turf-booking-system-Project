@@ -76,14 +76,72 @@
             fetch('/api/users')
                 .then(response => response.json())
                 .then(data => {
-                    let table = '<table class="min-w-full bg-white"><thead><tr><th class="py-2">ID</th><th class="py-2">Username</th><th class="py-2">Email</th><th class="py-2">Role</th><th class="py-2">Approved</th><th class="py-2">Actions</th></tr></thead><tbody>';
+                    let table = `
+                        <table class="min-w-full bg-white">
+                            <thead>
+                                <tr>
+                                    <th class="py-2">ID</th>
+                                    <th class="py-2">Username</th>
+                                    <th class="py-2">Email</th>
+                                    <th class="py-2">Role</th>
+                                    <th class="py-2">Approved</th>
+                                    <th class="py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">`;
+
                     data.forEach(user => {
-                        table += `<tr><td class="border px-4 py-2">${user.userId}</td><td class="border px-4 py-2">${user.username}</td><td class="border px-4 py-2">${user.email}</td><td class="border px-4 py-2">${user.role}</td><td class="border px-4 py-2">${user.approved}</td><td class="border px-4 py-2"><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button></td></tr>`;
+                        table += `
+                            <tr>
+                                <td class="border px-4 py-2">${user.userId}</td>
+                                <td class="border px-4 py-2">${user.username}</td>
+                                <td class="border px-4 py-2">${user.email}</td>
+                                <td class="border px-4 py-2">${user.role}</td>
+                                <td class="border px-4 py-2">${user.approved ? '✅' : '❌'}</td>
+                                <td class="border px-4 py-2">
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded approve-btn" 
+                                        data-user-id="${user.userId}" ${user.approved ? 'disabled' : ''}>
+                                        ${user.approved ? 'Approved' : 'Approve'}
+                                    </button>
+                                </td>
+                            </tr>`;
                     });
-                    table += '</tbody></table>';
+
+                    table += `</tbody></table>`;
                     document.getElementById('content').innerHTML = table;
+
+                    // Attach event listener to approve buttons after rendering
+                    document.querySelectorAll('.approve-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            approveUser(this.getAttribute('data-user-id'), this);
+                        });
+                    });
                 });
         }
+
+        // Function to approve user
+        function approveUser(userId, button) {
+            fetch(`/api/users/api/admins/approve/${userId}`, {
+                method: 'PUT',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // Show success message
+                button.textContent = 'Approved';
+                button.disabled = true; // Disable button after approval
+
+                // Update the "Approved" status in the UI
+                button.closest('tr').querySelectorAll('td')[4].textContent = '✅';
+            })
+            .catch(error => console.error('Error approving user:', error));
+        }
+
+        // Load users on page load
+        loadUsers();
 
         function showDateChooser() {
             document.getElementById('content').innerHTML = '<input type="date" id="bookingDate" class="border p-2 rounded"><button id="loadBookings" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">Load Bookings</button>';

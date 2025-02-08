@@ -375,7 +375,7 @@ function updateBookingStatus(bookingId, status) {
     })
     .then(response => response.json())
     .then(updatedBooking => {
-        alert('Booking status updated successfully!');
+        showToast('Booking status updated successfully!');
         // Handle UI updates here
     })
     .catch(error => {
@@ -402,3 +402,11 @@ async function fetchAndRenderAllTurfs() {
     }
 }
 
+function showToast(message) {
+    console.log('Showing toast:', message);
+    const toastElement = document.getElementById('errorToast');
+    const toastBody = toastElement.querySelector('.toast-body'); // Target the text container
+    toastBody.innerText = message; // Set dynamic message
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}

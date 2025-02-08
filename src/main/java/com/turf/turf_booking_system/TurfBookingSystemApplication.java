@@ -9,5 +9,4 @@ public class TurfBookingSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TurfBookingSystemApplication.class, args);
 	}
-
 }

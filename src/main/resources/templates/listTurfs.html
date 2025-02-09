@@ -492,15 +492,16 @@
 
             async function initialize() {
                 try {
-                    const userId = await fetchLoggedInUser(); // Wait for the first fetch to complete
+                    const userId = await fetchLoggedInUser(); // Wait for user details
                     console.log(userId);
                     const userData = await fetchUserDetails(userId);
                     userDetail = userData;
                     console.log(userDetail);
                 } catch (error) {
-                    // Handle the error (e.g. redirect to login page)
                     console.error("Initialization failed:", error);
+                    return;
                 }
+
                 const total_price = selectedTurf.pricePerHour;
 
                 const bookingData = {
@@ -508,40 +509,93 @@
                     turf: selectedTurf,
                     slot: selectedTimeslot,
                     booking_date: bookingDate,
-                    total_price: selectedTurf.pricePerHour
+                    total_price: total_price
                 };
 
-                console.log(bookingData,"this is booking data");
-                // Send the booking data to the backend
-                fetch ('/api/bookings', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(bookingData)
-                })
-                .then(response => {
-                    console.log("Response status:", response.status);
-                    console.log("Response URL:", response.url);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Booking successful:", data);
-                    alert("Booking successfully created!");
-                    closeModalHandler();
-                })
-                
-                .catch(error => {
-                    console.error('Error creating booking:', error);
-                    alert("There was an issue with your booking. Please try again.");
-                });
+                console.log(bookingData, "this is booking data");
+
+                try {
+                    // Step 1: Store the booking first
+                    const bookingResponse = await fetch('/api/bookings', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(bookingData)
+                    });
+
+                    if (!bookingResponse.ok) {
+                        throw new Error("Booking failed");
+                    }
+
+                    const booking = await bookingResponse.json();
+                    console.log("Booking successful:", booking);
+
+                    // Step 2: Initiate Payment
+                    const paymentResponse = await fetch(`/api/payments/createOrder?amount=${total_price}`, {
+                        method: 'POST'
+                    });
+
+                    if (!paymentResponse.ok) {
+                        throw new Error("Failed to initiate payment");
+                    }
+
+                    const orderData = await paymentResponse.json();
+                    console.log("Payment order created:", orderData);
+
+                    var options = {
+                        "key": "rzp_test_OOSTuqktSzXgII",  // Replace with your Razorpay Key
+                        "amount": parseFloat(orderData.amount).toFixed(2),
+                        "currency": "INR",
+                        "order_id": orderData.id,
+                        "handler": async function (response) {
+                            console.log("Payment successful:", response);
+
+                            // Step 3: Store Payment Info in Database
+                            const paymentData = {
+                                booking_id: booking.booking_id,  // Store booking ID with payment
+                                amount: Number(total_price).toFixed(2),
+                                payment_method: "Razorpay",
+                                // razorpay_payment_id: response.razorpay_payment_id
+                            };
+                            
+
+                            const savePaymentResponse = await fetch('/api/payments/save', {
+                                method: 'POST',
+                                credentials: 'include',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(paymentData)
+                            });
+
+                            if (!savePaymentResponse.ok) {
+                                throw new Error("Payment storage failed");
+                            }
+
+                            console.log("Payment stored successfully");
+                            alert("Booking & Payment Successful!");
+                            closeModalHandler();
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Something went wrong! Please try again.");
+                }
             }
+
+            // Call initialize function
             initialize();
+
             
         });
     </script>
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 
 </html>

@@ -63,7 +63,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/","/api/users/reg/signup","/api/users/ValidateToken", "/signup","/login", "/api/users/login", "/FindYourTurf", "/css/**", "/js/**", "/images/**","/favicon.ico","/swagger-ui/index.html","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                    registry.requestMatchers("/","/api/payments/**","/api/users/reg/signup","/api/users/ValidateToken", "/signup","/login", "/api/users/login", "/FindYourTurf", "/css/**", "/js/**", "/images/**","/favicon.ico","/swagger-ui/index.html","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                              .requestMatchers("/favicon.ico")
                              .permitAll()  // Allow access to these endpoints without authentication
                              .anyRequest().authenticated();  // All other requests require authentication

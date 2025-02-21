@@ -93,12 +93,12 @@
 }
 
 h1 {
-    color: #2980b9;
+    color: #29b935;
     margin-bottom: 10px;
 }
 
 p {
-    color: #7f8c8d;
+    color: #32d72c;
     margin-bottom: 20px;
 }
 
@@ -124,8 +124,8 @@ input[type="password"] {
 
 input[type="text"]:focus,
 input[type="password"]:focus {
-    border-color: #2980b9;
-    box-shadow: 0 0 5px rgba(41, 128, 185, 0.5);
+    border-color: #29b97f;
+    box-shadow: 0 0 5px rgba(47, 231, 185, 0.5);
     outline: none;
 }
 
@@ -133,7 +133,7 @@ input[type="password"]:focus {
     width: 80%;
     padding: 10px;
     /* margin-left: 12px; */
-    background-color: #2980b9;
+    background-color: #29b92e;
     color: white;
     border: none;
     border-radius: 5px;
@@ -143,7 +143,7 @@ input[type="password"]:focus {
 }
 
 .btn:hover {
-    background-color: #3498db;
+    background-color: #41e084;
     transform: scale(1.05);
 }
 
@@ -153,7 +153,7 @@ input[type="password"]:focus {
 }
 
 .signup-link a {
-    color: #2980b9;
+    color: #3ab929;
     text-decoration: none;
 }
 

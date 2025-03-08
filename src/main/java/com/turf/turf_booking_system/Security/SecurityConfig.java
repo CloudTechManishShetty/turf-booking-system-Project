@@ -70,7 +70,7 @@ public class SecurityConfig {
                 })
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.sendRedirect("/login");
+                            response.sendRedirect("/FIndYourTurf");
                         })
                 )
                 .sessionManagement(session -> session

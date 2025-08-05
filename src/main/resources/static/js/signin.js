@@ -13,7 +13,7 @@ loginButton.addEventListener('click', (event) => {
     const data = { email, password };
     const jsonData = JSON.stringify(data);
 
-    fetch('https://turf-booking-system-app.onrender.com/api/users/login', {
+    fetch('/api/users/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

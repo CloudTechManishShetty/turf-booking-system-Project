@@ -147,7 +147,7 @@
             const data = { username, email, phone, psw, role, approved: false };
             const jsonData = JSON.stringify(data);
 
-            fetch('https://turf-booking-system-app.onrender.com/api/users/reg/signup', {
+            fetch('/api/users/reg/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
